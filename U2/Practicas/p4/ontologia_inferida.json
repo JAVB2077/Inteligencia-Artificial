@@ -1,0 +1,184 @@
+{
+    "metadatos": {
+        "dominio": "Red Semantica Familiar y Profesional",
+        "version": "2.0"
+    },
+    "clase_base": [
+        "Persona"
+    ],
+    "clases_inferidas": [
+        "abuelo",
+        "Tio",
+        "Hermano",
+        "HijoDeMatrimonio",
+        "Colega"
+    ],
+    "individuos": {
+        "Carlos": {
+            "tipo": "Prersona",
+            "edad": 70,
+            "esposa": "Carmen",
+            "profesion": "Ingeniero"
+        },
+        "Carmen": {
+            "tipo": "Prersona",
+            "edad": 68,
+            "esposo": "Carlos",
+            "profesion": "Doctora"
+        },
+        "Martin": {
+            "tipo": "Prersona",
+            "edad": 35,
+            "padres": [
+                "Carlos",
+                "Carmen"
+            ],
+            "esposa": "Lenka",
+            "profesion": "Ingeniero"
+        },
+        "Lenka": {
+            "tipo": "Prersona",
+            "edad": 34,
+            "esposo": "Martin",
+            "profesion": "Arquitecta"
+        },
+        "Elena": {
+            "tipo": "Prersona",
+            "edad": 30,
+            "padres": [
+                "Carlos",
+                "Carmen"
+            ],
+            "profesion": "Profesora"
+        },
+        "Peter": {
+            "tipo": "Prersona",
+            "edad": 12,
+            "padres": [
+                "Martin",
+                "Lenka"
+            ],
+            "ocupacion": "Estudiante"
+        },
+        "Lucia": {
+            "tipo": "Prersona",
+            "edad": 8,
+            "padres": [
+                "Martin",
+                "Lenka"
+            ],
+            "ocupacion": "Estudiante"
+        },
+        "Tomas": {
+            "tipo": "Prersona",
+            "edad": 5,
+            "padres": [
+                "Elena"
+            ]
+        }
+    },
+    "conocimiento_inferido": {
+        "Carlos": {
+            "colegas": [
+                "Martin"
+            ]
+        },
+        "Martin": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ],
+            "colegas": [
+                "Carlos"
+            ]
+        },
+        "Elena": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        },
+        "Peter": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Elena",
+                "Lucia",
+                "Tomas"
+            ],
+            "abuelos": [
+                "Carlos",
+                "Carmen"
+            ],
+            "tios": [
+                "Carlos",
+                "Carmen",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        },
+        "Lucia": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Tomas"
+            ],
+            "abuelos": [
+                "Carlos",
+                "Carmen"
+            ],
+            "tios": [
+                "Carlos",
+                "Carmen",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        },
+        "Tomas": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia"
+            ],
+            "abuelos": [
+                "Carlos",
+                "Carmen"
+            ],
+            "tios": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        }
+    }
+}

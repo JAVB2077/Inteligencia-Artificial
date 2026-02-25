@@ -1,0 +1,17 @@
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Carpetas de compilación de Python (PyInstaller, etc)
+build/
+dist/
+*.spec
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

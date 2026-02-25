@@ -1,12 +1,12 @@
 {
     "metadatos":{
         
-        "dominiol":"Red Semantica FAmiliar y Profesional",
+        "dominio":"Red Semantica Familiar y Profesional",
         "version": "2.0"
     },
     "clase_base": ["Persona"],
-    "clases_inferidas":["abuelo","Tio","Hermano","hijoDeMatrimonio","Colega"],
-    "Individuos" : {
+    "clases_inferidas":["abuelo","Tio","Hermano","HijoDeMatrimonio","Colega"],
+    "individuos" : {
         "Carlos":{
             "tipo":"Prersona",
             "edad": 70,
@@ -36,7 +36,7 @@
             "tipo":"Prersona",
             "edad": 30,
             "padres": ["Carlos","Carmen"],
-            "profesion": "Doctora"        
+            "profesion": "Profesora"        
         },
         "Peter":{
             "tipo":"Prersona",
