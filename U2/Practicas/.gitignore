@@ -1,0 +1,23 @@
+# Python - Archivos de caché y compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales (Veo que tienes uno llamado .venv)
+.venv/
+venv/
+ENV/
+env/
+
+# Configuración de VS Code (Opcional, pero recomendado si trabajas solo)
+.vscode/
+
+# Archivos temporales de PyInstaller (Veo archivos .spec)
+*.spec
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
