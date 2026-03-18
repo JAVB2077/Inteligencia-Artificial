@@ -1,0 +1,1344 @@
+Practica 1
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def crear_red_semantica():
+    G = nx.DiGraph()
+    jerarquia=[
+        ["Canario","Ave"],
+        ["Avestruz","Ave"],
+        ["Pinguino","Ave"],
+        ["Ave","animal"],
+        ["Mamifero","animal"],
+        ["Gato","Mamifero"]
+    ]
+
+    propiedades=[
+        ["Animal", "Vida", "tiene"],
+        ["Ave", "Alas", "tiene"],
+        ["Ave", "Plumas", "tiene"],
+        ["Ave", "Volar", "puede"],
+        ["Mamifero", "Pelo", "tiene"],
+        ["Mamifero", "Leche", "tiene"],
+        ["Canario", "Cantar", "puede"],
+        ["Canario", "Amarillo", "es"],
+        ["Avestruz", "Corre", "puede"],
+        ["Pinguino", "Nadar", "puede"],
+        ["Pinguino", "Volar", "No_puede"],
+        ["Gato", "Maullar", "puede"],
+    ]
+    #Nodos y aristas
+    for hijo, padre in jerarquia:
+        G.add_edge(hijo, padre, relation="es_un")
+    
+    for sujeto, atributo, relacion in propiedades:
+        G.add_edge(sujeto, atributo, relation=relacion)
+    return G
+
+def visualizar_red(G):
+    plt.figure(figsize=(12,8))
+    pos = nx.spring_layout(G, k=0.5, iterations=50)
+    #Dibujar Nodos
+    nx.draw(G, pos, 
+            with_labels=True, 
+            node_size=3000, 
+            node_color="lightblue", 
+            font_size=10, 
+            font_weight="bold", 
+            edge_color="gray")
+    #Dibujar Etiquetas
+    edge_labels = nx.get_edge_attributes(G, 'relation')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red')
+    plt.title("Red Semantica: Jerarquia Animal")
+    plt.axis('off')
+    plt.show()
+
+if __name__ == "__main__":
+    red = crear_red_semantica()
+    visualizar_red(red)
+    
+
+PREACTICA 2
+
+#import matplotlib #si lo uso no jala
+#matplotlib.use ('Agg')
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def crear_red_universitaria():
+    G = nx.DiGraph()
+    jerarquia=[
+        ("Persona","Ser_Vivo"),
+        ("Estudiante","Persona"),
+        ("Profesor","Persona"),
+        ("Ingeniero","Persona"),
+        ("MAteria","Entidad_Academica"),
+        ("Aula","lugar")
+    ]
+
+    instancias=[
+        ("Juan", "Estudiante"),
+        ("Maria", "Estudiante"),
+        ("Dr.Emmanuel", "Profesor"),
+        ("Dr.Emmanuel", "Ingeniero"),
+        ("IA_Basica", "Materia"),
+        ("Robotica", "Materia"),
+        ("Lab_Computo", "Aula")
+    ]
+
+    relaciones=[
+        ("Dr.Emmanuel", "IA_Basica", "imparte"),
+        ("Dr.Emmanuel", "Robotica", "imparte"),
+        ("Juan", "IA_Basica", "cursa"),
+        ("Maria", "Robotica", "cursa"),
+        ("Maria", "IA_Basica", "cursa"),
+        ("IA_Basica", "Lab_Computo", "se_imparte_en"),
+        ("Robotica", "Lab_Computo", "se_imparte_en"),
+        ("Alumnos", "Dr.Emmanuel", "admiran")
+    ]
+    #Nodos y aristas
+    for hijo, padre in jerarquia:
+        G.add_edge(hijo, padre, relation="ES_UN")
+
+    for individuo, clase in instancias:
+        G.add_edge(individuo, clase, relation="ES_UNA_INSTANCIA")
+    
+    for sujeto, objeto, accion in relaciones:
+        G.add_edge(sujeto, objeto, relation=accion)
+    return G
+
+if __name__ == "__main__":
+    print("Creando red semantica")
+    red = crear_red_universitaria()
+    plt.figure(figsize=(14,10))
+    pos = nx.spring_layout(red, k=0.7, iterations=42)
+    nx.draw(red, pos, with_labels=True, node_size=2500, node_color="lightgreen", font_size=9, font_weight="bold", edge_color="gray", arrowsize=15)
+    edge_labels = nx.get_edge_attributes(red, 'relation')
+    nx.draw_networkx_edge_labels(red, pos, edge_labels=edge_labels, font_color='blue', font_size=8)
+    plt.title("Red Semantica: Iteraciones Universitaria")
+    plt.axis('off')
+    plt.show()  
+
+PRACTICA 2 ACTIVIDAD
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def crear_red_pokemon():
+    G = nx.DiGraph()
+
+    # Jerarquía (clases / tipos generales)
+    jerarquia = [
+        ("Pokemon", "Ser_Vivo"),
+        ("Tipo", "Categoria"),
+        ("Zona", "Lugar")
+    ]
+
+    # Instancias: 20 pokémon + tipos + zonas (cada tupla: (nombre, clase))
+    instancias = [
+        # Pokémons (20)
+        ("Charmander", "Pokemon"),
+        ("Vulpix", "Pokemon"),
+        ("Growlithe", "Pokemon"),
+        ("Squirtle", "Pokemon"),
+        ("Magikarp", "Pokemon"),
+        ("Psyduck", "Pokemon"),
+        ("Bulbasaur", "Pokemon"),
+        ("Oddish", "Pokemon"),
+        ("Bellsprout", "Pokemon"),
+        ("Pikachu", "Pokemon"),
+        ("Magnemite", "Pokemon"),
+        ("Pidgey", "Pokemon"),
+        ("Hoothoot", "Pokemon"),
+        ("Geodude", "Pokemon"),
+        ("Onix", "Pokemon"),
+        ("Sandshrew", "Pokemon"),
+        ("Caterpie", "Pokemon"),
+        ("Scyther", "Pokemon"),
+        ("Abra", "Pokemon"),
+        ("Jynx", "Pokemon"),
+
+        # Tipos
+        ("Fuego", "Tipo"),
+        ("Agua", "Tipo"),
+        ("Planta", "Tipo"),
+        ("Electrico", "Tipo"),
+        ("Volador", "Tipo"),
+        ("Roca", "Tipo"),
+        ("Tierra", "Tipo"),
+        ("Bicho", "Tipo"),
+        ("Psiquico", "Tipo"),
+        ("Hielo", "Tipo"),
+
+        # Zonas de spawn
+        ("Volcan", "Zona"),
+        ("Cueva", "Zona"),
+        ("Rio", "Zona"),
+        ("Mar", "Zona"),
+        ("Bosque", "Zona"),
+        ("Pradera", "Zona"),
+        ("Montana", "Zona"),
+        ("Ciudad", "Zona"),
+        ("Playa", "Zona"),
+        ("Lago", "Zona"),
+        ("Desierto", "Zona"),
+        ("Ruinas", "Zona"),
+        ("Tundra", "Zona")
+    ]
+
+    # Relaciones: (sujeto, objeto, accion)
+    relaciones = [
+        # tipos de cada pokémon
+        ("Charmander", "Fuego", "tiene_tipo"),
+        ("Vulpix", "Fuego", "tiene_tipo"),
+        ("Growlithe", "Fuego", "tiene_tipo"),
+        ("Squirtle", "Agua", "tiene_tipo"),
+        ("Magikarp", "Agua", "tiene_tipo"),
+        ("Psyduck", "Agua", "tiene_tipo"),
+        ("Bulbasaur", "Planta", "tiene_tipo"),
+        ("Oddish", "Planta", "tiene_tipo"),
+        ("Bellsprout", "Planta", "tiene_tipo"),
+        ("Pikachu", "Electrico", "tiene_tipo"),
+        ("Magnemite", "Electrico", "tiene_tipo"),
+        ("Pidgey", "Volador", "tiene_tipo"),
+        ("Hoothoot", "Volador", "tiene_tipo"),
+        ("Geodude", "Roca", "tiene_tipo"),
+        ("Onix", "Roca", "tiene_tipo"),
+        ("Sandshrew", "Tierra", "tiene_tipo"),
+        ("Caterpie", "Bicho", "tiene_tipo"),
+        ("Scyther", "Bicho", "tiene_tipo"),
+        ("Abra", "Psiquico", "tiene_tipo"),
+        ("Jynx", "Hielo", "tiene_tipo"),
+
+        # zonas de spawn / aparición
+        ("Charmander", "Volcan", "spawnea_en"),
+        ("Vulpix", "Volcan", "spawnea_en"),
+        ("Growlithe", "Pradera", "spawnea_en"),
+        ("Squirtle", "Lago", "spawnea_en"),
+        ("Magikarp", "Mar", "spawnea_en"),
+        ("Psyduck", "Lago", "spawnea_en"),
+        ("Bulbasaur", "Bosque", "spawnea_en"),
+        ("Oddish", "Bosque", "spawnea_en"),
+        ("Bellsprout", "Pradera", "spawnea_en"),
+        ("Pikachu", "Ciudad", "spawnea_en"),
+        ("Magnemite", "Ciudad", "spawnea_en"),
+        ("Pidgey", "Pradera", "spawnea_en"),
+        ("Hoothoot", "Bosque", "spawnea_en"),
+        ("Geodude", "Montana", "spawnea_en"),
+        ("Onix", "Cueva", "spawnea_en"),
+        ("Sandshrew", "Desierto", "spawnea_en"),
+        ("Caterpie", "Bosque", "spawnea_en"),
+        ("Scyther", "Pradera", "spawnea_en"),
+        ("Abra", "Ruinas", "spawnea_en"),
+        ("Jynx", "Tundra", "spawnea_en")
+    ]
+
+    # Agregar jerarquía (ES_UN)
+    for hijo, padre in jerarquia:
+        G.add_edge(hijo, padre, relation="ES_UN")
+
+    # Agregar instancias
+    for individuo, clase in instancias:
+        G.add_edge(individuo, clase, relation="ES_UNA_INSTANCIA")
+
+    # Agregar relaciones adicionales
+    for sujeto, objeto, accion in relaciones:
+        G.add_edge(sujeto, objeto, relation=accion)
+
+    return G
+
+if __name__ == "__main__":
+    print("Creando red semantica de Pokémons (20 nodos de especie)...")
+    red = crear_red_pokemon()
+    plt.figure(figsize=(16,12))
+    pos = nx.spring_layout(red, k=0.9, iterations=80, seed=42)
+    nx.draw(red, pos,
+            with_labels=True,
+            node_size=1200,
+            node_color="lightblue",
+            font_size=8,
+            font_weight="bold",
+            edge_color="gray",
+            arrowsize=12)
+    edge_labels = nx.get_edge_attributes(red, 'relation')
+    nx.draw_networkx_edge_labels(red, pos, edge_labels=edge_labels, font_color='red', font_size=7)
+    plt.title("Red Semántica: Pokémons, Tipos y Zonas de Spawn")
+    plt.axis('off')
+    plt.show()
+
+PRACTICA 3
+import json
+
+def cargar_base_conocimiento(ruta):
+    with open(ruta, 'r',encoding='utf-8') as archivo:
+        return json.load(archivo)
+    
+def razonador_logico(kb):
+    print("Iniciando motor de inferencia...")
+    individuos = kb["individuos"]
+    inferencias = kb["conocimiento_inferido"]
+
+#Recorrido
+    for nombre, datos in individuos.items():
+        #tiene padres esta persona?
+        if "padres" in datos and len(datos["padres"]) == 2:
+            padre1_nombre = datos["padres"][0]
+            padre2_nombre = datos["padres"][1]
+
+            padre1_datos = individuos.get(padre1_nombre, {})
+            padre2_datos = individuos.get(padre2_nombre, {})
+
+            #Verificamos si estan casados
+            casados = False
+            if padre1_datos.get("esposa") == padre2_nombre or padre1_nombre.get("esposo") == padre2_nombre:
+                casados = True
+            elif padre2_datos.get("esposa") == padre1_nombre or padre2_datos.get("esposo") == padre1_nombre:
+                casados = True
+            #INFERENCIA
+            if casados:
+                inferencias[nombre] = {
+                    "nueva_clase": "HijoDeMatrimonio",
+                    "razon": f"Se dedujo por que sus padres {padre1_nombre} y {padre2_nombre} son esposos",
+                }
+                print(f"Inferencia en contrada para: {nombre}")
+    return kb
+
+def main():
+    archivo_json = "ontologia.json"
+
+    #cargar base de conocimiento
+    base_conocimiento = cargar_base_conocimiento(archivo_json)
+    print("Conocimiento Explicito Inicial")
+    print(json.dumps(base_conocimiento, indent=2))
+    print("\n-----------------------------------\n")
+
+    #inferencia 
+    kb_actualizada = razonador_logico(base_conocimiento)
+
+    #resultado
+    print("\nConocimiento Inferido")
+    print(json.dumps(kb_actualizada, indent=2, ensure_ascii=False))
+
+if __name__ == "__main__":
+    main()
+
+    json PRACTICA3
+
+{
+    "clases" :["Persona", "HijoDeMatrimonio"],
+    "individuos" : {
+        "Martin":{
+            "tipo":"Persona",
+            "edad": 35,
+            "esposa": "lenka"
+        },
+        "lenka":{
+            "tipo":"Persona",
+            "esposo": "Martin"
+        },
+        "Peter":{
+            "tipo":"Persona",
+            "padres": ["Martin", "lenka"]
+        }
+    },
+    "conocimiento_inferido": {}
+}
+
+PREACTICA 4
+p4/graficar_inferencia3.py
+JSON PRINCIPAL PRACTICA 4
+{
+    "metadatos":{
+        
+        "dominio":"Red Semantica Familiar y Profesional",
+        "version": "2.0"
+    },
+    "clase_base": ["Persona"],
+    "clases_inferidas":["abuelo","Tio","Hermano","HijoDeMatrimonio","Colega"],
+    "individuos" : {
+        "Carlos":{
+            "tipo":"Prersona",
+            "edad": 70,
+            "esposa": "Carmen",
+            "profesion": "Ingeniero"        
+        },
+        "Carmen":{
+            "tipo":"Prersona",
+            "edad": 68,
+            "esposo": "Carlos",
+            "profesion": "Doctora"        
+        },
+        "Martin":{
+            "tipo":"Prersona",
+            "edad": 35,
+            "padres": ["Carlos","Carmen"],
+            "esposa": "Lenka",
+            "profesion": "Ingeniero"        
+        },
+        "Lenka":{
+            "tipo":"Prersona",
+            "edad": 34,
+            "esposo": "Martin",
+            "profesion": "Arquitecta"   
+        },
+        "Elena":{
+            "tipo":"Prersona",
+            "edad": 30,
+            "padres": ["Carlos","Carmen"],
+            "profesion": "Profesora"        
+        },
+        "Peter":{
+            "tipo":"Prersona",
+            "edad": 12,
+            "padres": ["Martin","Lenka"],
+            "ocupacion": "Estudiante"
+        },
+        "Lucia":{
+            "tipo":"Prersona",
+            "edad": 8,
+            "padres": ["Martin","Lenka"],
+            "ocupacion": "Estudiante"        
+        },
+        "Tomas":{
+            "tipo":"Prersona",
+            "edad": 5,
+            "padres": ["Elena"]
+        }
+    },
+    "conocimiento_inferido": {}
+}
+
+JSON Inferido PRACTICA 4
+{
+    "metadatos": {
+        "dominio": "Red Semantica Familiar y Profesional",
+        "version": "2.0"
+    },
+    "clase_base": [
+        "Persona"
+    ],
+    "clases_inferidas": [
+        "abuelo",
+        "Tio",
+        "Hermano",
+        "HijoDeMatrimonio",
+        "Colega"
+    ],
+    "individuos": {
+        "Carlos": {
+            "tipo": "Prersona",
+            "edad": 70,
+            "esposa": "Carmen",
+            "profesion": "Ingeniero"
+        },
+        "Carmen": {
+            "tipo": "Prersona",
+            "edad": 68,
+            "esposo": "Carlos",
+            "profesion": "Doctora"
+        },
+        "Martin": {
+            "tipo": "Prersona",
+            "edad": 35,
+            "padres": [
+                "Carlos",
+                "Carmen"
+            ],
+            "esposa": "Lenka",
+            "profesion": "Ingeniero"
+        },
+        "Lenka": {
+            "tipo": "Prersona",
+            "edad": 34,
+            "esposo": "Martin",
+            "profesion": "Arquitecta"
+        },
+        "Elena": {
+            "tipo": "Prersona",
+            "edad": 30,
+            "padres": [
+                "Carlos",
+                "Carmen"
+            ],
+            "profesion": "Profesora"
+        },
+        "Peter": {
+            "tipo": "Prersona",
+            "edad": 12,
+            "padres": [
+                "Martin",
+                "Lenka"
+            ],
+            "ocupacion": "Estudiante"
+        },
+        "Lucia": {
+            "tipo": "Prersona",
+            "edad": 8,
+            "padres": [
+                "Martin",
+                "Lenka"
+            ],
+            "ocupacion": "Estudiante"
+        },
+        "Tomas": {
+            "tipo": "Prersona",
+            "edad": 5,
+            "padres": [
+                "Elena"
+            ]
+        }
+    },
+    "conocimiento_inferido": {
+        "Carlos": {
+            "colegas": [
+                "Martin"
+            ]
+        },
+        "Martin": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ],
+            "colegas": [
+                "Carlos"
+            ]
+        },
+        "Elena": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        },
+        "Peter": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Elena",
+                "Lucia",
+                "Tomas"
+            ],
+            "abuelos": [
+                "Carlos",
+                "Carmen"
+            ],
+            "tios": [
+                "Carlos",
+                "Carmen",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        },
+        "Lucia": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Tomas"
+            ],
+            "abuelos": [
+                "Carlos",
+                "Carmen"
+            ],
+            "tios": [
+                "Carlos",
+                "Carmen",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        },
+        "Tomas": {
+            "hermanos": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Elena",
+                "Peter",
+                "Lucia"
+            ],
+            "abuelos": [
+                "Carlos",
+                "Carmen"
+            ],
+            "tios": [
+                "Carlos",
+                "Carmen",
+                "Martin",
+                "Lenka",
+                "Peter",
+                "Lucia",
+                "Tomas"
+            ]
+        }
+    }
+}
+
+PRACTICA 5 MOTOR DE INFERENCIA
+import json
+
+def cargar_base_conocimiento(ruta):
+    with open(ruta, 'r', encoding='utf-8') as archivo:
+        return json.load(archivo)
+
+def aplicar_reglas_inferencia_pokemon(kb):
+    print("Iniciando motor de inferencia Pokémon...")
+    individuos = kb["individuos"]
+
+    # Inicializamos las listas de inferencias para cada individuo
+    inferencias = {nombre: {"equipo_pokemon": [],"evolucion_fase_2": [],"compatriotas": [],
+                            "colegas_profesion_o_bando": [],"comparte_tipo": []} for nombre in individuos}
+
+    for sujeto, datos_sujeto in individuos.items():
+        # Extracción de datos clave del sujeto
+        region_sujeto = datos_sujeto.get("region_origen")
+        profesion_sujeto = datos_sujeto.get("profesion")
+        afiliacion_sujeto = datos_sujeto.get("afiliacion")
+        tipos_sujeto = set(datos_sujeto.get("tipos_elementales", []))
+        entrenador_sujeto = datos_sujeto.get("entrenador")
+        evolucion_directa = datos_sujeto.get("evolucion")
+
+        # 1. Inferencia Inversa: Equipo Pokémon
+        # Si este individuo es un Pokémon y tiene entrenador, lo agregamos al equipo del entrenador
+        if entrenador_sujeto and entrenador_sujeto in individuos:
+            if sujeto not in inferencias[entrenador_sujeto]["equipo_pokemon"]:
+                inferencias[entrenador_sujeto]["equipo_pokemon"].append(sujeto)
+
+        # 2. Inferencia Transitiva: Evolución de Fase 2
+        # Si A evoluciona a B, y B evoluciona a C -> C es la fase 2 de A
+        if evolucion_directa and evolucion_directa in individuos:
+            evo_fase_2 = individuos[evolucion_directa].get("evolucion")
+            if evo_fase_2:
+                if evo_fase_2 not in inferencias[sujeto]["evolucion_fase_2"]:
+                    inferencias[sujeto]["evolucion_fase_2"].append(evo_fase_2)
+
+        # 3. Comparaciones 1 a 1 con otros individuos
+        for otro, datos_otro in individuos.items():
+            if sujeto == otro:
+                continue
+
+            # Inferencia: Compatriotas (Misma región)
+            region_otro = datos_otro.get("region_origen")
+            if region_sujeto and region_sujeto == region_otro:
+                if otro not in inferencias[sujeto]["compatriotas"]:
+                    inferencias[sujeto]["compatriotas"].append(otro)
+
+            # Inferencia: Colegas de Profesión o Bando (Misma profesión o afiliación)
+            profesion_otro = datos_otro.get("profesion")
+            afiliacion_otro = datos_otro.get("afiliacion")
+            
+            comparte_profesion = profesion_sujeto and profesion_sujeto == profesion_otro
+            comparte_afiliacion = afiliacion_sujeto and afiliacion_sujeto == afiliacion_otro
+            
+            if comparte_profesion or comparte_afiliacion:
+                if otro not in inferencias[sujeto]["colegas_profesion_o_bando"]:
+                    inferencias[sujeto]["colegas_profesion_o_bando"].append(otro)
+
+            # Inferencia: Comparten tipo elemental (Intersección de conjuntos)
+            tipos_otro = set(datos_otro.get("tipos_elementales", []))
+            if tipos_sujeto and tipos_otro and not tipos_sujeto.isdisjoint(tipos_otro):
+                if otro not in inferencias[sujeto]["comparte_tipo"]:
+                    inferencias[sujeto]["comparte_tipo"].append(otro)
+
+    # Limpieza: Eliminamos listas vacías para que el JSON quede limpio
+    inferencias_limpias = {}
+    for individuo, deducciones in inferencias.items():
+        deducciones_filtradas = {k: v for k, v in deducciones.items() if len(v) > 0}
+        if deducciones_filtradas:
+            inferencias_limpias[individuo] = deducciones_filtradas
+
+    # Guardamos el conocimiento inferido en la base de conocimiento
+    kb["conocimiento_inferido"] = inferencias_limpias
+    return kb
+    
+def main():
+    # Asegúrate de que el nombre coincida con tu archivo JSON guardado
+    archivo_json = 'ontologia4.json' 
+
+    try:
+        base_conocimiento = cargar_base_conocimiento(archivo_json)
+    except FileNotFoundError:
+        print(f"Error: No se encontró el archivo {archivo_json}. Asegúrate de guardarlo en el mismo directorio.")
+        return
+
+    kb_actualizada = aplicar_reglas_inferencia_pokemon(base_conocimiento)
+
+    print("======================================================")
+    print("Conocimiento Inferido: (Nuevos hechos descubiertos)")
+    print("======================================================")
+    print(json.dumps(kb_actualizada["conocimiento_inferido"], indent=4, ensure_ascii=False))
+
+    with open('ontologia_inferida.json', 'w', encoding='utf-8') as f:
+        json.dump(kb_actualizada, f, indent=4, ensure_ascii=False)
+    print(f"\nConocimiento inferido guardado exitosamente en 'ontologia_inferida.json'")
+
+if __name__ == "__main__":
+    main()
+
+PRACTICA 5 GRAFICADOR DE INFERENCIA
+import networkx as nx
+import matplotlib.pyplot as plt
+import json
+
+def cargar_json(ruta):
+    with open(ruta, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def generar_grafo():
+    # Asegúrate de usar el archivo generado por el script de inferencia
+    try:
+        kb = cargar_json('ontologia_inferida.json')
+    except FileNotFoundError:
+        print("Error: No se encontró 'pokemon_ontologia_inferida.json'. Ejecuta primero el motor de inferencia.")
+        return
+
+    G = nx.DiGraph()
+
+    # Corrección del error tipográfico: "individuoa" -> "individuos"
+    individuos = kb.get("individuos", {})
+    inferidos = kb.get("conocimiento_inferido", {})
+
+    # 1. Crear Nodos (Entrenadores, Pokémon, Organizaciones, Regiones)
+    for nombre in individuos.keys():
+        G.add_node(nombre)
+
+    # 2. Relaciones Explícitas (Del JSON original)
+    for sujeto, datos in individuos.items():
+        # Relaciones directas simples
+        if "entrenador" in datos:
+            G.add_edge(sujeto, datos["entrenador"], relation="entrenador", tipo="explicito")
+        if "evolucion" in datos:
+            G.add_edge(sujeto, datos["evolucion"], relation="evoluciona_a", tipo="explicito")
+        if "pre_evolucion" in datos:
+            G.add_edge(sujeto, datos["pre_evolucion"], relation="evoluciona_de", tipo="explicito")
+        if "rival" in datos:
+            G.add_edge(sujeto, datos["rival"], relation="rival_de", tipo="explicito")
+        if "abuelo" in datos:
+            G.add_edge(sujeto, datos["abuelo"], relation="nieto_de", tipo="explicito")
+        if "nieto" in datos:
+            G.add_edge(sujeto, datos["nieto"], relation="abuelo_de", tipo="explicito")
+        if "lider" in datos:
+            G.add_edge(sujeto, datos["lider"], relation="liderado_por", tipo="explicito")
+        
+        # Relaciones en listas (amigos, compañeros)
+        for amigo in datos.get("amigos", []):
+            G.add_edge(sujeto, amigo, relation="amigo_de", tipo="explicito")
+        for compañero in datos.get("compañeros", []):
+            G.add_edge(sujeto, compañero, relation="compañero_de", tipo="explicito")
+
+    # 3. Relaciones Inferidas (Del motor de inferencia)
+    for sujeto, deducciones in inferidos.items():
+        for tipo_relacion, lista_nombres in deducciones.items():
+            for nombre_inferido in lista_nombres:
+                # Corrección: Se quitó las comillas para usar el valor de la variable
+                G.add_edge(sujeto, nombre_inferido, relation=tipo_relacion, tipo="inferido")
+
+    # ----- DIBUJAR GRAFO -------
+    print("Generando imagen de la red Pokémon...")
+    plt.figure(figsize=(20, 14)) # Tamaño un poco más grande por la cantidad de nodos
+
+    # Layout: Ajusta k para separar los nodos si se amontonan
+    pos = nx.spring_layout(G, k=1.8, iterations=80, seed=42)
+    
+    # Nodos (Colores temáticos de Pokémon: Rojo Pokeball o Amarillo)
+    nx.draw_networkx_nodes(G, pos, node_size=3500, node_color='#ffcb05', edgecolors='#3b4cca', linewidths=2)
+    nx.draw_networkx_labels(G, pos, font_size=9, font_weight='bold')
+
+    # Separar aristas por tipo
+    aristas_explicitas = [(u, v) for u, v, d in G.edges(data=True) if d['tipo'] == 'explicito']
+    aristas_inferidas = [(u, v) for u, v, d in G.edges(data=True) if d['tipo'] == 'inferido']
+
+    # Flechas Explícitas (Grises)
+    nx.draw_networkx_edges(G, pos, edgelist=aristas_explicitas, edge_color='gray',
+                           arrows=True, arrowsize=15, connectionstyle='arc3, rad=0.1')
+    
+    # Flechas Inferidas (Rojas y punteadas)
+    nx.draw_networkx_edges(G, pos, edgelist=aristas_inferidas, edge_color='red', style='dashed',
+                           arrows=True, arrowsize=15, connectionstyle='arc3, rad=0.2')
+    
+    # Etiquetas de las relaciones
+    edge_labels = nx.get_edge_attributes(G, 'relation')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=7, font_color='darkblue')
+
+    # Leyenda
+    plt.plot([], [], color='gray', label='Relación Explícita (JSON Original)')
+    plt.plot([], [], color='red', linestyle='dashed', label='Relación Inferida (Motor IA)')
+    plt.legend(loc='upper left', fontsize=12)
+
+    plt.title("Red Semántica Pokémon: Conocimiento Explícito vs Inferido", fontsize=18, fontweight='bold', color='#3b4cca')
+    plt.axis('off')
+
+    nombre_archivo = "grafo_pokemon_inferencia.png"
+    plt.savefig(nombre_archivo, bbox_inches='tight', dpi=200) # Mayor DPI para que el texto se lea mejor
+    print(f"¡Listo! La imagen ha sido guardada como: {nombre_archivo}")
+
+if __name__ == "__main__":
+    generar_grafo()
+
+PRACTICA 5 JSON PRINCIPAL
+{
+    "metadatos": {
+        "dominio": "Red Semantica del Mundo Pokemon",
+        "version": "2.0"
+    },
+    "clase_base": [
+        "Entrenador", 
+        "Pokemon", 
+        "Organizacion", 
+        "Region"
+    ],
+    "clases_inferidas": [
+        "LiderDeGimnasio", 
+        "Campeon", 
+        "Rival", 
+        "Evolucion", 
+        "PreEvolucion", 
+        "PokemonLegendario", 
+        "MiembroVillano", 
+        "JefeVillano", 
+        "Profesor"
+    ],
+    "individuos": {
+        "Kanto": {
+            "tipo": "Region",
+            "profesor_regional": "Profesor Oak",
+            "villanos_locales": "Team Rocket"
+        },
+        "Team Rocket": {
+            "tipo": "Organizacion",
+            "objetivo": "Robar Pokemon raros",
+            "lider": "Giovanni"
+        },
+        "Profesor Oak": {
+            "tipo": "Entrenador",
+            "edad": 55,
+            "region_origen": "Kanto",
+            "profesion": "Profesor Pokemon",
+            "nieto": "Gary"
+        },
+        "Ash": {
+            "tipo": "Entrenador",
+            "edad": 10,
+            "region_origen": "Kanto",
+            "profesion": "Campeon Mundial",
+            "pokemon_inicial": "Pikachu",
+            "rival": "Gary",
+            "amigos": ["Misty", "Brock"]
+        },
+        "Pikachu": {
+            "tipo": "Pokemon",
+            "nivel": 85,
+            "tipos_elementales": ["Electrico"],
+            "entrenador": "Ash",
+            "movimiento_caracteristico": "Rayo"
+        },
+        "Gary": {
+            "tipo": "Entrenador",
+            "edad": 10,
+            "region_origen": "Kanto",
+            "profesion": "Investigador Pokemon",
+            "abuelo": "Profesor Oak",
+            "rival": "Ash",
+            "pokemon_principal": "Blastoise"
+        },
+        "Misty": {
+            "tipo": "Entrenador",
+            "edad": 12,
+            "region_origen": "Kanto",
+            "profesion": "Lider de Gimnasio",
+            "especialidad": "Agua",
+            "pokemon_principal": "Starmie"
+        },
+        "Brock": {
+            "tipo": "Entrenador",
+            "edad": 15,
+            "region_origen": "Kanto",
+            "profesion": "Criador Pokemon",
+            "especialidad": "Roca",
+            "pokemon_principal": "Onix"
+        },
+        "Giovanni": {
+            "tipo": "Entrenador",
+            "edad": 45,
+            "region_origen": "Kanto",
+            "profesion": "Jefe del Team Rocket",
+            "especialidad": "Tierra",
+            "pokemon_principal": "Persian"
+        },
+        "Jessie": {
+            "tipo": "Entrenador",
+            "edad": 25,
+            "afiliacion": "Team Rocket",
+            "compañeros": ["James", "Meowth"],
+            "pokemon_principal": "Arbok"
+        },
+        "James": {
+            "tipo": "Entrenador",
+            "edad": 25,
+            "afiliacion": "Team Rocket",
+            "compañeros": ["Jessie", "Meowth"],
+            "pokemon_principal": "Weezing"
+        },
+        "Meowth": {
+            "tipo": "Pokemon",
+            "nivel": 30,
+            "tipos_elementales": ["Normal"],
+            "afiliacion": "Team Rocket",
+            "habla_humano": true
+        },
+        "Bulbasaur": {
+            "tipo": "Pokemon",
+            "nivel": 16,
+            "tipos_elementales": ["Planta", "Veneno"],
+            "evolucion": "Ivysaur"
+        },
+        "Ivysaur": {
+            "tipo": "Pokemon",
+            "nivel": 32,
+            "tipos_elementales": ["Planta", "Veneno"],
+            "pre_evolucion": "Bulbasaur",
+            "evolucion": "Venusaur"
+        },
+        "Venusaur": {
+            "tipo": "Pokemon",
+            "nivel": 50,
+            "tipos_elementales": ["Planta", "Veneno"],
+            "pre_evolucion": "Ivysaur"
+        },
+        "Charmander": {
+            "tipo": "Pokemon",
+            "nivel": 12,
+            "tipos_elementales": ["Fuego"],
+            "evolucion": "Charmeleon"
+        },
+        "Charmeleon": {
+            "tipo": "Pokemon",
+            "nivel": 28,
+            "tipos_elementales": ["Fuego"],
+            "pre_evolucion": "Charmander",
+            "evolucion": "Charizard"
+        },
+        "Charizard": {
+            "tipo": "Pokemon",
+            "nivel": 60,
+            "tipos_elementales": ["Fuego", "Volador"],
+            "pre_evolucion": "Charmeleon",
+            "entrenador": "Ash"
+        },
+        "Mewtwo": {
+            "tipo": "Pokemon",
+            "nivel": 100,
+            "tipos_elementales": ["Psiquico"],
+            "categoria": "Legendario",
+            "creador": "Team Rocket"
+        }
+    },
+    "conocimiento_inferido": {}
+}
+
+PRACTICA 5 ANTOLOGIA INFERIDA
+{
+    "metadatos": {
+        "dominio": "Red Semantica del Mundo Pokemon",
+        "version": "2.0"
+    },
+    "clase_base": [
+        "Entrenador",
+        "Pokemon",
+        "Organizacion",
+        "Region"
+    ],
+    "clases_inferidas": [
+        "LiderDeGimnasio",
+        "Campeon",
+        "Rival",
+        "Evolucion",
+        "PreEvolucion",
+        "PokemonLegendario",
+        "MiembroVillano",
+        "JefeVillano",
+        "Profesor"
+    ],
+    "individuos": {
+        "Kanto": {
+            "tipo": "Region",
+            "profesor_regional": "Profesor Oak",
+            "villanos_locales": "Team Rocket"
+        },
+        "Team Rocket": {
+            "tipo": "Organizacion",
+            "objetivo": "Robar Pokemon raros",
+            "lider": "Giovanni"
+        },
+        "Profesor Oak": {
+            "tipo": "Entrenador",
+            "edad": 55,
+            "region_origen": "Kanto",
+            "profesion": "Profesor Pokemon",
+            "nieto": "Gary"
+        },
+        "Ash": {
+            "tipo": "Entrenador",
+            "edad": 10,
+            "region_origen": "Kanto",
+            "profesion": "Campeon Mundial",
+            "pokemon_inicial": "Pikachu",
+            "rival": "Gary",
+            "amigos": [
+                "Misty",
+                "Brock"
+            ]
+        },
+        "Pikachu": {
+            "tipo": "Pokemon",
+            "nivel": 85,
+            "tipos_elementales": [
+                "Electrico"
+            ],
+            "entrenador": "Ash",
+            "movimiento_caracteristico": "Rayo"
+        },
+        "Gary": {
+            "tipo": "Entrenador",
+            "edad": 10,
+            "region_origen": "Kanto",
+            "profesion": "Investigador Pokemon",
+            "abuelo": "Profesor Oak",
+            "rival": "Ash",
+            "pokemon_principal": "Blastoise"
+        },
+        "Misty": {
+            "tipo": "Entrenador",
+            "edad": 12,
+            "region_origen": "Kanto",
+            "profesion": "Lider de Gimnasio",
+            "especialidad": "Agua",
+            "pokemon_principal": "Starmie"
+        },
+        "Brock": {
+            "tipo": "Entrenador",
+            "edad": 15,
+            "region_origen": "Kanto",
+            "profesion": "Criador Pokemon",
+            "especialidad": "Roca",
+            "pokemon_principal": "Onix"
+        },
+        "Giovanni": {
+            "tipo": "Entrenador",
+            "edad": 45,
+            "region_origen": "Kanto",
+            "profesion": "Jefe del Team Rocket",
+            "especialidad": "Tierra",
+            "pokemon_principal": "Persian"
+        },
+        "Jessie": {
+            "tipo": "Entrenador",
+            "edad": 25,
+            "afiliacion": "Team Rocket",
+            "compañeros": [
+                "James",
+                "Meowth"
+            ],
+            "pokemon_principal": "Arbok"
+        },
+        "James": {
+            "tipo": "Entrenador",
+            "edad": 25,
+            "afiliacion": "Team Rocket",
+            "compañeros": [
+                "Jessie",
+                "Meowth"
+            ],
+            "pokemon_principal": "Weezing"
+        },
+        "Meowth": {
+            "tipo": "Pokemon",
+            "nivel": 30,
+            "tipos_elementales": [
+                "Normal"
+            ],
+            "afiliacion": "Team Rocket",
+            "habla_humano": true
+        },
+        "Bulbasaur": {
+            "tipo": "Pokemon",
+            "nivel": 16,
+            "tipos_elementales": [
+                "Planta",
+                "Veneno"
+            ],
+            "evolucion": "Ivysaur"
+        },
+        "Ivysaur": {
+            "tipo": "Pokemon",
+            "nivel": 32,
+            "tipos_elementales": [
+                "Planta",
+                "Veneno"
+            ],
+            "pre_evolucion": "Bulbasaur",
+            "evolucion": "Venusaur"
+        },
+        "Venusaur": {
+            "tipo": "Pokemon",
+            "nivel": 50,
+            "tipos_elementales": [
+                "Planta",
+                "Veneno"
+            ],
+            "pre_evolucion": "Ivysaur"
+        },
+        "Charmander": {
+            "tipo": "Pokemon",
+            "nivel": 12,
+            "tipos_elementales": [
+                "Fuego"
+            ],
+            "evolucion": "Charmeleon"
+        },
+        "Charmeleon": {
+            "tipo": "Pokemon",
+            "nivel": 28,
+            "tipos_elementales": [
+                "Fuego"
+            ],
+            "pre_evolucion": "Charmander",
+            "evolucion": "Charizard"
+        },
+        "Charizard": {
+            "tipo": "Pokemon",
+            "nivel": 60,
+            "tipos_elementales": [
+                "Fuego",
+                "Volador"
+            ],
+            "pre_evolucion": "Charmeleon",
+            "entrenador": "Ash"
+        },
+        "Mewtwo": {
+            "tipo": "Pokemon",
+            "nivel": 100,
+            "tipos_elementales": [
+                "Psiquico"
+            ],
+            "categoria": "Legendario",
+            "creador": "Team Rocket"
+        }
+    },
+    "conocimiento_inferido": {
+        "Profesor Oak": {
+            "compatriotas": [
+                "Ash",
+                "Gary",
+                "Misty",
+                "Brock",
+                "Giovanni"
+            ]
+        },
+        "Ash": {
+            "equipo_pokemon": [
+                "Pikachu",
+                "Charizard"
+            ],
+            "compatriotas": [
+                "Profesor Oak",
+                "Gary",
+                "Misty",
+                "Brock",
+                "Giovanni"
+            ]
+        },
+        "Gary": {
+            "compatriotas": [
+                "Profesor Oak",
+                "Ash",
+                "Misty",
+                "Brock",
+                "Giovanni"
+            ]
+        },
+        "Misty": {
+            "compatriotas": [
+                "Profesor Oak",
+                "Ash",
+                "Gary",
+                "Brock",
+                "Giovanni"
+            ]
+        },
+        "Brock": {
+            "compatriotas": [
+                "Profesor Oak",
+                "Ash",
+                "Gary",
+                "Misty",
+                "Giovanni"
+            ]
+        },
+        "Giovanni": {
+            "compatriotas": [
+                "Profesor Oak",
+                "Ash",
+                "Gary",
+                "Misty",
+                "Brock"
+            ]
+        },
+        "Jessie": {
+            "colegas_profesion_o_bando": [
+                "James",
+                "Meowth"
+            ]
+        },
+        "James": {
+            "colegas_profesion_o_bando": [
+                "Jessie",
+                "Meowth"
+            ]
+        },
+        "Meowth": {
+            "colegas_profesion_o_bando": [
+                "Jessie",
+                "James"
+            ]
+        },
+        "Bulbasaur": {
+            "evolucion_fase_2": [
+                "Venusaur"
+            ],
+            "comparte_tipo": [
+                "Ivysaur",
+                "Venusaur"
+            ]
+        },
+        "Ivysaur": {
+            "comparte_tipo": [
+                "Bulbasaur",
+                "Venusaur"
+            ]
+        },
+        "Venusaur": {
+            "comparte_tipo": [
+                "Bulbasaur",
+                "Ivysaur"
+            ]
+        },
+        "Charmander": {
+            "evolucion_fase_2": [
+                "Charizard"
+            ],
+            "comparte_tipo": [
+                "Charmeleon",
+                "Charizard"
+            ]
+        },
+        "Charmeleon": {
+            "comparte_tipo": [
+                "Charmander",
+                "Charizard"
+            ]
+        },
+        "Charizard": {
+            "comparte_tipo": [
+                "Charmander",
+                "Charmeleon"
+            ]
+        }
+    }
+}
+
+PRACTICA 6
+% Hombres y mujeres
+hombre(carlos).
+hombre(martin).
+hombre(peter).
+mujer(carmen).
+mujer(lenka).
+
+%Relaciones directas
+progenitor(carlos, martin).
+progenitor(carmen, martin).
+progenitor(martin, peter).
+progenitor(lenka, peter).
+
+%Regla 1 - X es padre de Y si X es progenitor de Y y X es hombre
+padre(X,Y) :- progenitor(X,Y), hombre(X).
+
+%Regla 2 - X es madre de Y si X es progenitor de Y y X es mujer
+madre(X,Y) :- progenitor(X,Y), mujer(X).
+
+%Regla 3 - X es abuelo de Y si X es padre de Z e Z es padre de Y
+abuelo(X,Y) :- padre(X,Z), padre(Z,Y).
+
+%consultas
+%?- padre(X, peter).
+%?- madre(X, peter).
+%?- abuelo(X, peter).
+
+practica 7
+
+
+%Hechos
+genero(matrix,ciencia_ficcion).
+genero(inception,ciencia_ficcion).
+genero(titanic,romance).
+genero(avatar,aventura).
+genero(shrek,animacion).
+
+% Clasificación
+clasificacion(matrix, adultos).
+clasificacion(inception, adultos).
+clasificacion(titanic, adultos).
+clasificacion(avatar, adultos).
+clasificacion(shrek, infantil).
+clasificacion(robot_salvaje, infantil).
+clasificacion(lego, infantil).
+clasificacion(son_como_niños, comedia).
+clasificacion(son_como_niños, adultos).
+
+% Duración
+duracion(matrix, larga).
+duracion(inception, larga).
+duracion(titanic, larga).
+duracion(avatar, ultra_larga).
+duracion(shrek, corta).
+
+%plataformas
+plataforma(matrix, netflix).
+plataforma(inception, hbo).
+plataforma(titanic, disney_plus).
+plataforma(avatar, disney_plus).
+plataforma(shrek, netflix).
+
+%Reglas
+para_niños(P) :- clasificacion(P, infantil), duracion(P, corta).
+    %?- para_niños(P).
+
+noche_intensa(P) :- genero(P,accion), genero(P, ciencia_ficcion), duracion(P, larga).
+    %?- noche_intensa(P).
+
+donde_ver(P, Plataforma) :- plataforma(P, Plataforma).
+    %?- donde_ver(matrix, Plataforma).
+
+recomendacion_clasificacion(Clasificacion, Pelicula) :- clasificacion(Pelicula, Clasificacion).
+    %?- recomendacion_clasificacion(adultos, Pelicula).
+

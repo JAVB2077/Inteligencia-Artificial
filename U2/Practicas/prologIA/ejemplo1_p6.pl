@@ -23,4 +23,4 @@ abuelo(X,Y) :- padre(X,Z), padre(Z,Y).
 %consultas
 %?- padre(X, peter).
 %?- madre(X, peter).
-%?- abuelo(X, peter).KO
+%?- abuelo(X, peter).
