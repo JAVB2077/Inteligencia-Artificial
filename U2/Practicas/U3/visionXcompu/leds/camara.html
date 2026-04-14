@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Control ESP32 - 8vo Semestre</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/models/hand-pose-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #222; color: white; }
+    #video { transform: scaleX(-1); border-radius: 10px; border: 3px solid #555; }
+    .status { font-size: 1.5rem; margin: 20px; color: #0f0; }
+  </style>
+</head>
+<body>
+  <h1>Control de 5 LEDs por Gestos</h1>
+  <div id="status" class="status">Cargando modelo...</div>
+  <video id="video" width="640" height="480" autoplay></video>
+
+  <script>
+    const ESP32_IP = "http://192.168.1.78"; // <--- PON TU IP AQUÍ
+    const video = document.getElementById('video');
+    const status = document.getElementById('status');
+    let detector;
+
+    async function setupCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      return new Promise(resolve => video.onloadedmetadata = () => resolve(video));
+    }
+
+    async function main() {
+      const model = handPoseDetection.SupportedModels.MediaPipeHands;
+      detector = await handPoseDetection.createDetector(model, {
+        runtime: 'mediapipe',
+        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands'
+      });
+      status.innerText = "Sistema Listo - Levanta tus dedos";
+      detect();
+    }
+
+    async function detect() {
+      const hands = await detector.estimateHands(video);
+      let estado = ["0", "0", "0", "0", "0"];
+
+      if (hands.length > 0) {
+        const landmarks = hands[0].keypoints;
+        // Puntas de los dedos: Pulgar(4), Índice(8), Medio(12), Anular(16), Meñique(20)
+        const tips = [4, 8, 12, 16, 20];
+        const bases = [2, 6, 10, 14, 18];
+
+        tips.forEach((tipIdx, i) => {
+          if (i === 0) { // Lógica especial Pulgar (horizontal)
+            if (Math.abs(landmarks[4].x - landmarks[17].x) > 50) estado[i] = "1";
+          } else { // Otros dedos (vertical)
+            if (landmarks[tipIdx].y < landmarks[bases[i]].y) estado[i] = "1";
+          }
+        });
+        
+        enviarAEsp32(estado.join(""));
+      }
+      requestAnimationFrame(detect);
+    }
+
+    async function enviarAEsp32(bits) {
+      try {
+        // Usamos mode 'no-cors' para evitar bloqueos de seguridad simples
+        await fetch(`${ESP32_IP}/SET?state=${bits}`, { mode: 'no-cors' });
+        status.innerText = `Enviando: ${bits}`;
+      } catch (e) {
+        status.innerText = "Error de conexión con ESP32";
+      }
+    }
+
+    setupCamera().then(main);
+  </script>
+</body>
+</html>

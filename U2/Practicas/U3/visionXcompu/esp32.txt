@@ -1,0 +1,30 @@
+#include <WiFi.h>
+
+const char* ssid = "RED 24";
+const char* password = "1020302010";
+WiFiServer server(80);
+
+int leds[] = {13, 12, 14, 27, 26};
+
+void setup() {
+  for(int i=0; i<5; i++) pinMode(leds[i], OUTPUT);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) delay(500);
+  server.begin();
+}
+
+void loop() {
+  WiFiClient client = server.available();
+  if (client) {
+    String req = client.readStringUntil('\r');
+    // Ejemplo de ruta: /SET?state=11000 (enciende los 2 primeros)
+    int pos = req.indexOf("state=");
+    if (pos != -1) {
+      String state = req.substring(pos + 6, pos + 11);
+      for (int i = 0; i < 5; i++) {
+        digitalWrite(leds[i], state[i] == '1' ? HIGH : LOW);
+      }
+    }
+    client.stop();
+  }
+}
